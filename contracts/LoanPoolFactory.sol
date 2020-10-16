@@ -2,7 +2,6 @@
 pragma solidity ^0.6.0;
 import "./LoanPoolAave.sol";
 import "./LoanPoolMstable.sol";
-import "./interfaces/ILoanPool.sol";
 
 contract LoanPoolFactory {
     uint256 public totalPools;
@@ -10,6 +9,7 @@ contract LoanPoolFactory {
     address mUsd = 0x752fC0b67FFB55e2261970feaC7223d8657cbF79;
 
     event NewLoanPool(
+        uint256 id,
         address loanPool,
         uint256 collateralAmount,
         uint256 minimumBidAmount,
@@ -59,8 +59,9 @@ contract LoanPoolFactory {
         totalPools++;
 
         emit NewLoanPool(
+            totalPools,
             loanPool,
-            maximumBidAmount * totalParticipants,
+            maximumBidAmount * maxParticipants,
             minimumBidAmount,
             auctionInterval,
             auctionDuration,
