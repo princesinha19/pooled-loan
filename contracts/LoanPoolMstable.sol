@@ -22,7 +22,7 @@ contract LoanPoolMstable is Mstable {
     mapping(address => uint256) public loanAmount;
 
     event NewParticipant(address participant);
-    event NewBidder(address bidder, uint256 term, uint256 timestamp);
+    event NewBidder(address bidder, uint256 amount, uint256 term, uint256 timestamp);
     event ClaimedLoan(address claimer, uint256 amount, uint256 term);
     event ClaimedFinalYield(address participant, uint256 amount);
 
@@ -102,7 +102,7 @@ contract LoanPoolMstable is Mstable {
 
         loanAmount[msg.sender] = collateralAmount - bidAmount;
 
-        emit NewBidder(msg.sender, getTermCount(), block.timestamp);
+        emit NewBidder(msg.sender, bidAmount, getTermCount(), block.timestamp);
     }
 
     function claimLoan() public {

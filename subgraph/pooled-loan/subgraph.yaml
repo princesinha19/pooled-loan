@@ -1,0 +1,103 @@
+specVersion: 0.0.1
+description: tracks pool creation, new auctions bids, payouts, etc.
+repository: https://github.com/princesinha19/pooled-loan
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: loanPoolFactory
+    network: mainnet
+    source:
+      address: ''
+      abi: loanPoolFactory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.1
+      language: wasm/assemblyscript
+      entities:
+        - LoanPool
+      abis:
+        - name: loanPoolFactory
+          file: ./abis/loanPoolFactory.json
+      eventHandlers:
+        - event: NewLoanPool(uint256,address,uint256,uint256,uint256,uint256,uint8,address,string,address,uint256)
+          handler: handleNewLoanPool
+      file: ./src/mapping.ts
+templates:
+  - name: LoanPoolAave
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: LoanPoolAave
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.1
+      language: wasm/assemblyscript
+      file: ./src/mappings/LoanPoolAave.ts
+      entities:
+        - Participant
+        - Bid
+        - LoanClaimed
+        - FinalYieldClaimed
+      abis:
+        - name: LoanPoolAave
+          file: ./abis/LoanPoolAave.json
+      eventHandlers:
+        - event: NewParticipant(address)
+          handler: handleNewParticipation
+        - event: NewBidder(address,uint256,uint256,uint256)
+          handler: handleNewBid
+        - event: ClaimedLoan(address,uint256,uint256)
+          handler: handleLoanClaimed
+        - event: ClaimedFinalYield(address,uint256)
+          handler: handleClaimedFinalYield
+  - name: LoanPoolMstable
+    kind: ethereum/contract
+    network: mainnet
+    source:
+      abi: LoanPoolMstable
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.1
+      language: wasm/assemblyscript
+      file: ./src/mappings/LoanPoolMstable.ts
+      entities:
+        - Participant
+        - Bid
+        - LoanClaimed
+        - FinalYieldClaimed
+      abis:
+        - name: LoanPoolMstable
+          file: ./abis/LoanPoolMstable.json
+      eventHandlers:
+        - event: NewParticipant(address)
+          handler: handleNewParticipation
+        - event: NewBidder(address,uint256,uint256,uint256)
+          handler: handleNewBid
+        - event: ClaimedLoan(address,uint256,uint256)
+          handler: handleLoanClaimed
+        - event: ClaimedFinalYield(address,uint256)
+          handler: handleClaimedFinalYield
+
+# dataSources:
+#   - kind: ethereum/contract
+#     name: Gravity
+#     network: mainnet
+#     source:
+#       address: '0x2E645469f354BB4F5c8a05B3b30A929361cf77eC'
+#       abi: Gravity
+#     mapping:
+#       kind: ethereum/events
+#       apiVersion: 0.0.4
+#       language: wasm/assemblyscript
+#       entities:
+#         - Gravatar
+#       abis:
+#         - name: Gravity
+#           file: ./abis/Gravity.json
+#       eventHandlers:
+#         - event: NewGravatar(uint256,address,string,string)
+#           handler: handleNewGravatar
+#         - event: UpdatedGravatar(uint256,address,string,string)
+#           handler: handleUpdatedGravatar
+#       file: ./src/mapping.ts
