@@ -2,7 +2,6 @@
 pragma solidity ^0.6.0;
 import "./LoanPoolAave.sol";
 import "./LoanPoolMstable.sol";
-import "./interfaces/ILoanPool.sol";
 
 contract LoanPoolFactory {
     uint256 public totalPools;
@@ -62,7 +61,7 @@ contract LoanPoolFactory {
         emit NewLoanPool(
             totalPools,
             loanPool,
-            maximumBidAmount * totalParticipants,
+            maximumBidAmount * maxParticipants,
             minimumBidAmount,
             auctionInterval,
             auctionDuration,

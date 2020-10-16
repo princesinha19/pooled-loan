@@ -7,9 +7,9 @@ pragma solidity ^0.6.0;
  */
 interface IERC20 {
     /**
-     * @dev Returns the amount of tokens in existence.
+     * @dev Returns the decimals.
      */
-    function getLendingRate() external view returns (uint256);
+    function decimals() external view returns (uint256);
 
     /**
      * @dev Returns the amount of tokens owned by `account`.
