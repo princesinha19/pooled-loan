@@ -11,7 +11,7 @@ export function handleNewParticipation(event: NewParticipant): void {
     participant.save()
 }
 
-export function handleNewBid( event: NewBidder): void {
+export function handleNewBid(event: NewBidder): void {
     let bidder = new Bid(event.params.bidder.toHex()+ event.params.amount.toHex())
     bidder.bidder = event.params.bidder
     bidder.amount = event.params.amount
