@@ -41,6 +41,12 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "loanPool",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "participant",
         "type": "address"
       },
@@ -57,6 +63,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "loanPool",
+        "type": "address"
+      },
       {
         "indexed": false,
         "internalType": "address",
@@ -82,6 +94,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "loanPool",
+        "type": "address"
+      },
       {
         "indexed": false,
         "internalType": "address",
@@ -113,6 +131,12 @@
   {
     "anonymous": false,
     "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "loanPool",
+        "type": "address"
+      },
       {
         "indexed": false,
         "internalType": "address",

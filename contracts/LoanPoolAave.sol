@@ -21,15 +21,25 @@ contract LoanPoolAave is Aave {
     mapping(address => bool) public takenLoan;
     mapping(address => uint256) public loanAmount;
 
-    event NewParticipant(address participant);
+    event NewParticipant(address loanPool, address participant);
     event NewBidder(
+        address loanPool,
         address bidder,
         uint256 amount,
         uint256 term,
         uint256 timestamp
     );
-    event ClaimedLoan(address claimer, uint256 amount, uint256 term);
-    event ClaimedFinalYield(address participant, uint256 amount);
+    event ClaimedLoan(
+        address loanPool,
+        address claimer,
+        uint256 amount,
+        uint256 term
+    );
+    event ClaimedFinalYield(
+        address loanPool,
+        address participant,
+        uint256 amount
+    );
 
     constructor(
         uint256 _maximumBidAmount,
@@ -78,7 +88,7 @@ contract LoanPoolAave is Aave {
         isParticipant[msg.sender] = true;
         totalParticipants++;
 
-        emit NewParticipant(msg.sender);
+        emit NewParticipant(address(this), msg.sender);
     }
 
     function bid(uint256 bidAmount) public {
@@ -111,7 +121,13 @@ contract LoanPoolAave is Aave {
 
         loanAmount[msg.sender] = collateralAmount - bidAmount;
 
-        emit NewBidder(msg.sender, bidAmount, getTermCount(), block.timestamp);
+        emit NewBidder(
+            address(this),
+            msg.sender,
+            bidAmount,
+            getTermCount(),
+            block.timestamp
+        );
     }
 
     function claimLoan() public {
@@ -133,6 +149,7 @@ contract LoanPoolAave is Aave {
         );
 
         emit ClaimedLoan(
+            address(this),
             msg.sender,
             loanAmount[msg.sender],
             getTermCount() - 1
@@ -160,7 +177,7 @@ contract LoanPoolAave is Aave {
 
         token.transfer(msg.sender, finalReturnAmount());
 
-        emit ClaimedFinalYield(msg.sender, finalReturnAmount());
+        emit ClaimedFinalYield(address(this), msg.sender, finalReturnAmount());
     }
 
     function finalReturnAmount() internal view returns (uint256) {
@@ -188,6 +205,6 @@ contract LoanPoolAave is Aave {
     }
 
     function nextAutionCloseTimestamp() public view returns (uint256) {
-        return nextAutionStartTimestamp() + auctionDuration;
+        return nextAutionStartTimestamp() + (auctionDuration * 1 hours);
     }
 }
