@@ -20,6 +20,7 @@ contract LoanPoolAave is Aave {
     mapping(uint256 => uint256) public highestBidAmount;
     mapping(address => bool) public takenLoan;
     mapping(address => uint256) public loanAmount;
+    mapping(address => bool) public claimedFinalYield;
 
     event NewParticipant(address loanPool, address participant);
     event NewBidder(
@@ -62,7 +63,7 @@ contract LoanPoolAave is Aave {
     function participate() external {
         require(
             block.timestamp <= (poolStartTimestamp + auctionInterval * 1 hours),
-            "Participation time is over !!"
+            "Participation time is already over !!"
         );
         require(
             totalParticipants + 1 <= maxParticipants,
@@ -93,11 +94,14 @@ contract LoanPoolAave is Aave {
 
     function bid(uint256 bidAmount) public {
         require(
+            block.timestamp < poolCloseTimestamp(),
+            "All auction already complete !!"
+        );
+        require(
             block.timestamp >= nextAutionStartTimestamp() &&
                 block.timestamp <= nextAutionCloseTimestamp(),
-            "Auction for this month is over !!"
+            "Auction for this term is over !!"
         );
-
         require(
             isParticipant[msg.sender],
             "You are not a participant of this pool"
@@ -106,18 +110,18 @@ contract LoanPoolAave is Aave {
 
         require(
             bidAmount >= minimumBidAmount &&
-                bidAmount > highestBidAmount[getTermCount()],
+                bidAmount > highestBidAmount[getAuctionCount()],
             "Bid Amount must be greater than current bid amount and min bid amount !!"
         );
 
         require(
             bidAmount >= minimumBidAmount &&
-                bidAmount > highestBidAmount[getTermCount()],
+                bidAmount > highestBidAmount[getAuctionCount()],
             "Bid Amount must be greater than current bid amount and min bid amount !!"
         );
 
-        highestBidAmount[getTermCount()] = bidAmount;
-        highestBidder[getTermCount()] = msg.sender;
+        highestBidAmount[getAuctionCount()] = bidAmount;
+        highestBidder[getAuctionCount()] = msg.sender;
 
         loanAmount[msg.sender] = collateralAmount - bidAmount;
 
@@ -125,14 +129,14 @@ contract LoanPoolAave is Aave {
             address(this),
             msg.sender,
             bidAmount,
-            getTermCount(),
+            getAuctionCount(),
             block.timestamp
         );
     }
 
     function claimLoan() public {
         require(
-            highestBidder[getTermCount() - 1] == msg.sender,
+            highestBidder[getAuctionCount() - 1] == msg.sender,
             "You are not the highest bidder !!"
         );
         require(
@@ -152,17 +156,13 @@ contract LoanPoolAave is Aave {
             address(this),
             msg.sender,
             loanAmount[msg.sender],
-            getTermCount() - 1
+            getAuctionCount() - 1
         );
     }
 
     function claimFinalYield() public {
-        // poolCloseTimestamp = poolStartTimestamp +
-        //      (totalParticipants * auctionInterval * 1 hours)
         require(
-            block.timestamp >
-                (poolStartTimestamp +
-                    (totalParticipants * auctionInterval * 1 hours)),
+            block.timestamp > poolCloseTimestamp(),
             "Pool is still active !!"
         );
         require(
@@ -170,14 +170,18 @@ contract LoanPoolAave is Aave {
             "You are not a participant of this pool"
         );
 
+        claimedFinalYield[msg.sender] = true;
+
+        uint256 returnAmount = finalReturnAmount();
+
         require(
-            withdraw(finalReturnAmount()),
+            withdraw(returnAmount),
             "Withdrawl from lending pool failed !!"
         );
 
-        token.transfer(msg.sender, finalReturnAmount());
+        token.transfer(msg.sender, returnAmount);
 
-        emit ClaimedFinalYield(address(this), msg.sender, finalReturnAmount());
+        emit ClaimedFinalYield(address(this), msg.sender, returnAmount);
     }
 
     function finalReturnAmount() internal view returns (uint256) {
@@ -193,18 +197,46 @@ contract LoanPoolAave is Aave {
             );
     }
 
-    function getTermCount() public view returns (uint256) {
-        return
-            ((block.timestamp - poolStartTimestamp) /
-                (auctionInterval * 1 hours)) + 1;
+    function getAuctionCount() public view returns (uint256) {
+        uint256 term = ((block.timestamp - poolStartTimestamp) /
+            (auctionInterval * 1 hours)) + 1;
+
+        if (term > totalParticipants) {
+            term = totalParticipants;
+        }
+
+        return term;
     }
 
     function nextAutionStartTimestamp() public view returns (uint256) {
-        return
-            poolStartTimestamp + (getTermCount() * auctionInterval * 1 hours);
+        uint256 result;
+
+        if (block.timestamp < poolCloseTimestamp()) {
+            result =
+                poolStartTimestamp +
+                (getAuctionCount() * auctionInterval * 1 hours);
+        }
+
+        return result;
     }
 
     function nextAutionCloseTimestamp() public view returns (uint256) {
-        return nextAutionStartTimestamp() + (auctionDuration * 1 hours);
+        uint256 result;
+
+        if (block.timestamp < poolCloseTimestamp()) {
+            result = nextAutionStartTimestamp() + (auctionDuration * 1 hours);
+        }
+
+        return result;
+    }
+
+    function poolCloseTimestamp() public view returns (uint256) {
+        return
+            poolStartTimestamp +
+            ((
+                totalParticipants > 1
+                    ? totalParticipants - 1
+                    : totalParticipants
+            ) * auctionInterval);
     }
 }

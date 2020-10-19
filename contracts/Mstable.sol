@@ -3,10 +3,10 @@ pragma solidity ^0.6.0;
 import "./interfaces/IERC20.sol";
 
 contract Mstable {
-    // mUSD Address: 0x752fC0b67FFB55e2261970feaC7223d8657cbF79
-    // mUSD SAVE Address: 0xa4e196CB0b83a0a4F1859Ebf0E344c113FEeb
-    address internal tokenAddress = 0x752fC0b67FFB55e2261970feaC7223d8657cbF79;
-    address internal saveAddress = 0xa4e196CB0b83a0a4F1859Ebf0E344c113FEeb754;
+    // mUSD Address: 0x70605Bdd16e52c86FC7031446D995Cf5c7E1b0e7
+    // mUSD SAVE Address: 0x54Ac0bdf4292F7565Af13C9FBEf214eEEB2d0F87
+    address internal tokenAddress = 0x70605Bdd16e52c86FC7031446D995Cf5c7E1b0e7;
+    address internal saveAddress = 0x54Ac0bdf4292F7565Af13C9FBEf214eEEB2d0F87;
 
     receive() external payable {}
 

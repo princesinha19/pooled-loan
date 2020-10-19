@@ -6,7 +6,7 @@ import "./LoanPoolMstable.sol";
 contract LoanPoolFactory {
     uint256 public totalPools;
     address dai = 0xFf795577d9AC8bD7D90Ee22b6C1703490b6512FD;
-    address mUsd = 0x752fC0b67FFB55e2261970feaC7223d8657cbF79;
+    address mUsd = 0x70605Bdd16e52c86FC7031446D995Cf5c7E1b0e7;
 
     event NewLoanPool(
         uint256 id,

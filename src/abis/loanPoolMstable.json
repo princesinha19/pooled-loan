@@ -201,6 +201,25 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "claimedFinalYield",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "collateralAmount",
     "outputs": [
@@ -215,7 +234,7 @@
   },
   {
     "inputs": [],
-    "name": "getPoolBalance",
+    "name": "getAuctionCount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -228,7 +247,7 @@
   },
   {
     "inputs": [],
-    "name": "getTermCount",
+    "name": "getPoolBalance",
     "outputs": [
       {
         "internalType": "uint256",
@@ -372,6 +391,19 @@
     "name": "participate",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "poolCloseTimestamp",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
