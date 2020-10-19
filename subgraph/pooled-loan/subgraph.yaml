@@ -44,13 +44,13 @@ templates:
         - name: LoanPoolAave
           file: ./abis/LoanPoolAave.json
       eventHandlers:
-        - event: NewParticipant(address)
+        - event: NewParticipant(address,address)
           handler: handleNewParticipation
-        - event: NewBidder(address,uint256,uint256,uint256)
+        - event: NewBidder(address,address,uint256,uint256,uint256)
           handler: handleNewBid
-        - event: ClaimedLoan(address,uint256,uint256)
+        - event: ClaimedLoan(address,address,uint256,uint256)
           handler: handleLoanClaimed
-        - event: ClaimedFinalYield(address,uint256)
+        - event: ClaimedFinalYield(address,address,uint256)
           handler: handleClaimedFinalYield
   - name: LoanPoolMstable
     kind: ethereum/contract
@@ -71,11 +71,11 @@ templates:
         - name: LoanPoolMstable
           file: ./abis/LoanPoolMstable.json
       eventHandlers:
-        - event: NewParticipant(address)
+        - event: NewParticipant(address,address)
           handler: handleNewParticipation
-        - event: NewBidder(address,uint256,uint256,uint256)
+        - event: NewBidder(address,address,uint256,uint256,uint256)
           handler: handleNewBid
-        - event: ClaimedLoan(address,uint256,uint256)
+        - event: ClaimedLoan(address,address,uint256,uint256)
           handler: handleLoanClaimed
-        - event: ClaimedFinalYield(address,uint256)
+        - event: ClaimedFinalYield(address,address,uint256)
           handler: handleClaimedFinalYield

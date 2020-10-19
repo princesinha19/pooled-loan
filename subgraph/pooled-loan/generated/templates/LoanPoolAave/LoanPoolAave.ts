@@ -23,12 +23,16 @@ export class ClaimedFinalYield__Params {
     this._event = event;
   }
 
-  get participant(): Address {
+  get loanPool(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
+  get participant(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
   get amount(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 
@@ -45,16 +49,20 @@ export class ClaimedLoan__Params {
     this._event = event;
   }
 
-  get claimer(): Address {
+  get loanPool(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
+  get claimer(): Address {
+    return this._event.parameters[1].value.toAddress();
+  }
+
   get amount(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+    return this._event.parameters[2].value.toBigInt();
   }
 
   get term(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
+    return this._event.parameters[3].value.toBigInt();
   }
 }
 
@@ -71,20 +79,24 @@ export class NewBidder__Params {
     this._event = event;
   }
 
-  get bidder(): Address {
+  get loanPool(): Address {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get amount(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+  get bidder(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 
-  get term(): BigInt {
+  get amount(): BigInt {
     return this._event.parameters[2].value.toBigInt();
   }
 
-  get timestamp(): BigInt {
+  get term(): BigInt {
     return this._event.parameters[3].value.toBigInt();
+  }
+
+  get timestamp(): BigInt {
+    return this._event.parameters[4].value.toBigInt();
   }
 }
 
@@ -101,8 +113,12 @@ export class NewParticipant__Params {
     this._event = event;
   }
 
-  get participant(): Address {
+  get loanPool(): Address {
     return this._event.parameters[0].value.toAddress();
+  }
+
+  get participant(): Address {
+    return this._event.parameters[1].value.toAddress();
   }
 }
 

@@ -14,11 +14,13 @@ type LoanPool @entity {
 
 type Participant @entity {
   id: ID!
+  loanPool: Bytes!
   participant: Bytes!
 }
 
 type Bid @entity {
   id: ID!
+  loanPool: Bytes!
   bidder: Bytes!
   amount: BigInt!
   term: BigInt!
@@ -27,6 +29,7 @@ type Bid @entity {
 
 type LoanClaimed @entity {
   id: ID!
+  loanPool: Bytes!
   claimer: Bytes!
   amount: BigInt!
   term: BigInt!
@@ -34,6 +37,7 @@ type LoanClaimed @entity {
 
 type FinalYieldClaimed @entity {
   id: ID!
+  loanPool: Bytes!
   participant: Bytes!
   amount: BigInt!
 }

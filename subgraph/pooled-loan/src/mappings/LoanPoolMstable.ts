@@ -7,12 +7,14 @@ let loanPool = context.getString("loanPool")
 
 export function handleNewParticipation(event: NewParticipant): void {
     let participant = new Participant(loanPool + event.params.participant.toHex())
+    participant.loanPool = event.params.loanPool
     participant.participant = event.params.participant
     participant.save()
 }
 
 export function handleNewBid( event: NewBidder): void {
     let bidder = new Bid(event.params.bidder.toHex()+ event.params.amount.toHex())
+    bidder.loanPool = event.params.loanPool
     bidder.bidder = event.params.bidder
     bidder.amount = event.params.amount
     bidder.term = event.params.term
@@ -22,6 +24,7 @@ export function handleNewBid( event: NewBidder): void {
 
 export function handleLoanClaimed(event: ClaimedLoan): void {
     let loanClaimed = new LoanClaimed(loanPool + event.params.claimer.toHex())
+    loanClaimed.loanPool = event.params.loanPool
     loanClaimed.claimer = event.params.claimer
     loanClaimed.amount = event.params.amount
     loanClaimed.term = event.params.term
@@ -30,6 +33,7 @@ export function handleLoanClaimed(event: ClaimedLoan): void {
 
 export function handleClaimedFinalYield(event: ClaimedFinalYield): void {
     let finalYieldClaimed = new FinalYieldClaimed(loanPool + event.params.participant.toHex())
+    finalYieldClaimed.loanPool = event.params.loanPool
     finalYieldClaimed.participant = event.params.participant
     finalYieldClaimed.amount = event.params.amount
 }

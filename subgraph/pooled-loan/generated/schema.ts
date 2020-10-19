@@ -163,6 +163,15 @@ export class Participant extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get loanPool(): Bytes {
+    let value = this.get("loanPool");
+    return value.toBytes();
+  }
+
+  set loanPool(value: Bytes) {
+    this.set("loanPool", Value.fromBytes(value));
+  }
+
   get participant(): Bytes {
     let value = this.get("participant");
     return value.toBytes();
@@ -201,6 +210,15 @@ export class Bid extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get loanPool(): Bytes {
+    let value = this.get("loanPool");
+    return value.toBytes();
+  }
+
+  set loanPool(value: Bytes) {
+    this.set("loanPool", Value.fromBytes(value));
   }
 
   get bidder(): Bytes {
@@ -270,6 +288,15 @@ export class LoanClaimed extends Entity {
     this.set("id", Value.fromString(value));
   }
 
+  get loanPool(): Bytes {
+    let value = this.get("loanPool");
+    return value.toBytes();
+  }
+
+  set loanPool(value: Bytes) {
+    this.set("loanPool", Value.fromBytes(value));
+  }
+
   get claimer(): Bytes {
     let value = this.get("claimer");
     return value.toBytes();
@@ -326,6 +353,15 @@ export class FinalYieldClaimed extends Entity {
 
   set id(value: string) {
     this.set("id", Value.fromString(value));
+  }
+
+  get loanPool(): Bytes {
+    let value = this.get("loanPool");
+    return value.toBytes();
+  }
+
+  set loanPool(value: Bytes) {
+    this.set("loanPool", Value.fromBytes(value));
   }
 
   get participant(): Bytes {
