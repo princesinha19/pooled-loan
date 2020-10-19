@@ -2,13 +2,13 @@ specVersion: 0.0.2
 description: tracks pool creation, new auctions bids, payouts, etc.
 repository: https://github.com/princesinha19/pooled-loan
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: loanPoolFactory
     network: kovan
     source:
-      address: '0xd692f4B47579cd47eaC18C20Bb85Eee0172f228a'
+      address: "0xd692f4B47579cd47eaC18C20Bb85Eee0172f228a"
       abi: loanPoolFactory
       startBlock: 21557100
     mapping:
@@ -19,11 +19,11 @@ dataSources:
         - LoanPool
       abis:
         - name: loanPoolFactory
-          file: ./abis/loanPoolFactory.json
+          file: loanPoolFactory/abis/loanPoolFactory.json
       eventHandlers:
         - event: NewLoanPool(uint256,address,uint256,uint256,uint256,uint256,uint8,address,string,address,uint256)
           handler: handleNewLoanPool
-      file: ./src/mapping.ts
+      file: loanPoolFactory/loanPoolFactory.wasm
 templates:
   - name: LoanPoolAave
     kind: ethereum/contract
@@ -34,7 +34,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/LoanPoolAave.ts
+      file: templates/LoanPoolAave/LoanPoolAave.wasm
       entities:
         - Participant
         - Bid
@@ -42,7 +42,7 @@ templates:
         - FinalYieldClaimed
       abis:
         - name: LoanPoolAave
-          file: ./abis/LoanPoolAave.json
+          file: LoanPoolAave/abis/LoanPoolAave.json
       eventHandlers:
         - event: NewParticipant(address)
           handler: handleNewParticipation
@@ -61,7 +61,7 @@ templates:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/LoanPoolMstable.ts
+      file: templates/LoanPoolMstable/LoanPoolMstable.wasm
       entities:
         - Participant
         - Bid
@@ -69,7 +69,7 @@ templates:
         - FinalYieldClaimed
       abis:
         - name: LoanPoolMstable
-          file: ./abis/LoanPoolMstable.json
+          file: LoanPoolMstable/abis/LoanPoolMstable.json
       eventHandlers:
         - event: NewParticipant(address)
           handler: handleNewParticipation

@@ -1,6 +1,6 @@
 import { dataSource } from "@graphprotocol/graph-ts"
-import { NewParticipant, NewBidder, ClaimedLoan, ClaimedFinalYield} from '../generated/LoanPoolMstable/LoanPoolMstable'
-import { Participant, Bid, LoanClaimed, FinalYieldClaimed } from '../generated/schema'
+import { NewParticipant, NewBidder, ClaimedLoan, ClaimedFinalYield} from '../../generated/templates/LoanPoolMstable/LoanPoolMstable'
+import { Participant, Bid, LoanClaimed, FinalYieldClaimed } from '../../generated/schema'
 
 let context = dataSource.context()
 let loanPool = context.getString("loanPool")
@@ -29,7 +29,7 @@ export function handleLoanClaimed(event: ClaimedLoan): void {
 }
 
 export function handleClaimedFinalYield(event: ClaimedFinalYield): void {
-    let finalYieldClaimed = new FinalYieldClaimed(loanPool + event.params.participant)
+    let finalYieldClaimed = new FinalYieldClaimed(loanPool + event.params.participant.toHex())
     finalYieldClaimed.participant = event.params.participant
     finalYieldClaimed.amount = event.params.amount
 }

@@ -1,3 +1,4 @@
+import { DataSourceContext } from "@graphprotocol/graph-ts"
 import { NewLoanPool } from '../generated/loanPoolFactory/loanPoolFactory'
 import { LoanPool } from '../generated/schema'
 import { LoanPoolAave, LoanPoolMstable } from '../generated/templates'
@@ -6,10 +7,10 @@ export function handleNewLoanPool(event: NewLoanPool): void {
   let context = new DataSourceContext()
   if (event.params.lendingPool == 'Aave') {
     context.setString("loanPool", event.params.lendingPool)
-    LoanPoolAave.create(event.params.loanPool, context)
+    LoanPoolAave.createWithContext(event.params.loanPool, context)
   } else {
     context.setString("loanPool", event.params.lendingPool)
-    LoanPoolMstable.create(event.params.loanPool, context)
+    LoanPoolMstable.createWithContext(event.params.loanPool, context)
   }
   let loanPool = new LoanPool(event.params.id.toHex())
   loanPool.loanPool = event.params.loanPool
@@ -24,22 +25,3 @@ export function handleNewLoanPool(event: NewLoanPool): void {
   loanPool.createdAt = event.params.createdAt
   loanPool.save()
 }
-// export function handleNewGravatar(event: NewGravatar): void {
-//   let gravatar = new Gravatar(event.params.id.toHex())
-//   gravatar.owner = event.params.owner
-//   gravatar.displayName = event.params.displayName
-//   gravatar.imageUrl = event.params.imageUrl
-//   gravatar.save()
-// }
-
-// export function handleUpdatedGravatar(event: UpdatedGravatar): void {
-//   let id = event.params.id.toHex()
-//   let gravatar = Gravatar.load(id)
-//   if (gravatar == null) {
-//     gravatar = new Gravatar(id)
-//   }
-//   gravatar.owner = event.params.owner
-//   gravatar.displayName = event.params.displayName
-//   gravatar.imageUrl = event.params.imageUrl
-//   gravatar.save()
-// }

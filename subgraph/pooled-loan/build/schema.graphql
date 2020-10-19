@@ -1,0 +1,39 @@
+type LoanPool @entity {
+  id: ID!
+  loanPool: Bytes!
+  collateralAmount: BigInt!
+  minimumBidAmount: BigInt!
+  auctionInterval: BigInt!
+  auctionDuration: BigInt!
+  maxParticipants: Int!
+  tokenAddress: Bytes!
+  lendingPool: String!
+  creator: Bytes!
+  createdAt: BigInt!
+}
+
+type Participant @entity {
+  id: ID!
+  participant: Bytes!
+}
+
+type Bid @entity {
+  id: ID!
+  bidder: Bytes!
+  amount: BigInt!
+  term: BigInt!
+  timestamp: BigInt!
+}
+
+type LoanClaimed @entity {
+  id: ID!
+  claimer: Bytes!
+  amount: BigInt!
+  term: BigInt!
+}
+
+type FinalYieldClaimed @entity {
+  id: ID!
+  participant: Bytes!
+  amount: BigInt!
+}
