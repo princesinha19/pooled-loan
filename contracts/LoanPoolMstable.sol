@@ -14,6 +14,7 @@ contract LoanPoolMstable is Mstable {
     uint256 public auctionInterval;
     uint256 public auctionDuration;
     uint256 internal loanerCount;
+    uint256 internal claimerCount;
 
     mapping(address => bool) public isParticipant;
     mapping(uint256 => address) public highestBidder;
@@ -136,7 +137,7 @@ contract LoanPoolMstable is Mstable {
 
     function claimLoan() public {
         require(
-            highestBidder[getAuctionCount() - 1] == msg.sender,
+            highestBidder[getAuctionCount()] == msg.sender,
             "You are not the highest bidder !!"
         );
         require(
@@ -170,6 +171,7 @@ contract LoanPoolMstable is Mstable {
             "You are not a participant of this pool"
         );
 
+        claimerCount++;
         claimedFinalYield[msg.sender] = true;
 
         uint256 returnAmount = finalReturnAmount();
@@ -187,9 +189,10 @@ contract LoanPoolMstable is Mstable {
     function finalReturnAmount() internal view returns (uint256) {
         return
             ((getPoolBalance() -
-                ((totalParticipants - loanerCount) *
+                ((totalParticipants - loanerCount - claimerCount) *
                     collateralAmount *
-                    10**token.decimals())) / totalParticipants) +
+                    10**token.decimals())) /
+                (totalParticipants - claimerCount)) +
             (
                 takenLoan[msg.sender]
                     ? 0
@@ -201,7 +204,7 @@ contract LoanPoolMstable is Mstable {
         uint256 term = ((block.timestamp - poolStartTimestamp) /
             (auctionInterval * 1 hours)) + 1;
 
-        if (term > totalParticipants) {
+        if (term >= totalParticipants) {
             term = totalParticipants;
         }
 
@@ -211,10 +214,10 @@ contract LoanPoolMstable is Mstable {
     function nextAutionStartTimestamp() public view returns (uint256) {
         uint256 result;
 
-        if (block.timestamp < poolCloseTimestamp()) {
+        if (block.timestamp < poolCloseTimestamp() && totalParticipants > 1) {
             result =
                 poolStartTimestamp +
-                (getAuctionCount() * auctionInterval * 1 hours);
+                ((getAuctionCount() - 1) * auctionInterval * 1 hours);
         }
 
         return result;
@@ -223,7 +226,7 @@ contract LoanPoolMstable is Mstable {
     function nextAutionCloseTimestamp() public view returns (uint256) {
         uint256 result;
 
-        if (block.timestamp < poolCloseTimestamp()) {
+        if (block.timestamp < poolCloseTimestamp() && totalParticipants > 1) {
             result = nextAutionStartTimestamp() + (auctionDuration * 1 hours);
         }
 
@@ -237,6 +240,8 @@ contract LoanPoolMstable is Mstable {
                 totalParticipants > 1
                     ? totalParticipants - 1
                     : totalParticipants
-            ) * auctionInterval);
+            ) *
+                auctionInterval *
+                1 hours);
     }
 }
