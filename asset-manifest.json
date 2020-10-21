@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/pooled-loan/static/css/main.fad53284.chunk.css",
-    "main.js": "/pooled-loan/static/js/main.bd165bae.chunk.js",
-    "main.js.map": "/pooled-loan/static/js/main.bd165bae.chunk.js.map",
+    "main.js": "/pooled-loan/static/js/main.c9f48c43.chunk.js",
+    "main.js.map": "/pooled-loan/static/js/main.c9f48c43.chunk.js.map",
     "runtime-main.js": "/pooled-loan/static/js/runtime-main.2f5e26e9.js",
     "runtime-main.js.map": "/pooled-loan/static/js/runtime-main.2f5e26e9.js.map",
-    "static/css/2.8aa5a7f8.chunk.css": "/pooled-loan/static/css/2.8aa5a7f8.chunk.css",
-    "static/js/2.c2236159.chunk.js": "/pooled-loan/static/js/2.c2236159.chunk.js",
-    "static/js/2.c2236159.chunk.js.map": "/pooled-loan/static/js/2.c2236159.chunk.js.map",
+    "static/css/2.f3cffc9e.chunk.css": "/pooled-loan/static/css/2.f3cffc9e.chunk.css",
+    "static/js/2.851e283b.chunk.js": "/pooled-loan/static/js/2.851e283b.chunk.js",
+    "static/js/2.851e283b.chunk.js.map": "/pooled-loan/static/js/2.851e283b.chunk.js.map",
     "index.html": "/pooled-loan/index.html",
-    "precache-manifest.4b97efba2b6219f9139538c2937a07b1.js": "/pooled-loan/precache-manifest.4b97efba2b6219f9139538c2937a07b1.js",
+    "precache-manifest.d465f8a98b59bb79e3f0773f4286b843.js": "/pooled-loan/precache-manifest.d465f8a98b59bb79e3f0773f4286b843.js",
     "service-worker.js": "/pooled-loan/service-worker.js",
-    "static/css/2.8aa5a7f8.chunk.css.map": "/pooled-loan/static/css/2.8aa5a7f8.chunk.css.map",
+    "static/css/2.f3cffc9e.chunk.css.map": "/pooled-loan/static/css/2.f3cffc9e.chunk.css.map",
     "static/css/main.fad53284.chunk.css.map": "/pooled-loan/static/css/main.fad53284.chunk.css.map",
-    "static/js/2.c2236159.chunk.js.LICENSE.txt": "/pooled-loan/static/js/2.c2236159.chunk.js.LICENSE.txt",
+    "static/js/2.851e283b.chunk.js.LICENSE.txt": "/pooled-loan/static/js/2.851e283b.chunk.js.LICENSE.txt",
     "static/media/0x.png": "/pooled-loan/static/media/0x.f0181479.png",
     "static/media/aave.png": "/pooled-loan/static/media/aave.2dcc77d9.png",
     "static/media/logo.png": "/pooled-loan/static/media/logo.4b911f88.png",
@@ -21,9 +21,9 @@
   },
   "entrypoints": [
     "static/js/runtime-main.2f5e26e9.js",
-    "static/css/2.8aa5a7f8.chunk.css",
-    "static/js/2.c2236159.chunk.js",
+    "static/css/2.f3cffc9e.chunk.css",
+    "static/js/2.851e283b.chunk.js",
     "static/css/main.fad53284.chunk.css",
-    "static/js/main.bd165bae.chunk.js"
+    "static/js/main.c9f48c43.chunk.js"
   ]
 }

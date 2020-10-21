@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/pooled-loan/precache-manifest.4b97efba2b6219f9139538c2937a07b1.js"
+  "/pooled-loan/precache-manifest.d465f8a98b59bb79e3f0773f4286b843.js"
 );
 
 self.addEventListener('message', (event) => {
