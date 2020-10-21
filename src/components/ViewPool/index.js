@@ -46,7 +46,8 @@ export default function ViewPool() {
         auctionInterval: 0,
         poolCloseTimestamp: 0,
         highestBidAmount: 0,
-        isHighestBidder: false,
+        isLoanWinner: false,
+        winnerInAuction: 0,
         userCurrentBid: 0,
         claimedFinalYield: false,
         erc20Balance: 0,
@@ -161,17 +162,23 @@ export default function ViewPool() {
                         .methods.nextAutionCloseTimestamp().call();
                 }
 
-                let isHighestBidder;
+                let isLoanWinner = false, winnerInAuction = 0;
                 if (Number(auctionCount) > 0) {
-                    isHighestBidder = await contractInstance
-                        .methods.highestBidder(auctionCount).call();
+                    const loanStatus = await contractInstance
+                        .methods.checkWinnerStatus(window.userAddress).call();
 
-                    isHighestBidder = isHighestBidder === window.userAddress ?
-                        true : false;
+                    winnerInAuction = loanStatus[1];
+
+                    if (winnerInAuction < auctionCount ||
+                        (Number(auctionCount) === Number(totalParticipants) - 1 &&
+                            time.currentUnixTime() > Number(autionCloseTimestamp))
+                    ) {
+                        isLoanWinner = loanStatus[0];
+                    }
                 }
 
                 let loanAmount;
-                if (isHighestBidder || alreadyTakenLoan) {
+                if (isLoanWinner || alreadyTakenLoan) {
                     loanAmount = await contractInstance
                         .methods.loanAmount(window.userAddress).call();
                 }
@@ -197,7 +204,8 @@ export default function ViewPool() {
                     autionStartTimestamp,
                     autionCloseTimestamp,
                     highestBidAmount,
-                    isHighestBidder,
+                    isLoanWinner,
+                    winnerInAuction,
                     poolCloseTimestamp,
                     erc20Balance,
                     maxBidAmount,
@@ -343,7 +351,10 @@ export default function ViewPool() {
                                         <u>Auction Done</u>
                                         <span> :</span>
                                         <span className="float-right">
-                                            {state.totalParticipants > 0 ? state.auctionCount - 1 : 0}
+                                            {state.totalParticipants > 1 ?
+                                                state.auctionCount
+                                                : 0
+                                            }
                                         </span>
                                     </Col>
 
@@ -406,7 +417,7 @@ export default function ViewPool() {
 
                                         <Row className="text-center">
                                             <Col>
-                                                <u>Auction Closing</u>
+                                                <u>Auction Close In</u>
                                                 <span> : </span>
                                                 <span>
                                                     {time.getRemaingTime(state.autionCloseTimestamp)}
@@ -467,101 +478,90 @@ export default function ViewPool() {
                             </Card.Body>
 
                             {state.isParticipant ?
-                                (state.alreadyTakenLoan ?
-                                    <div className="info-message">
-                                        Congratulations
-                                        <span role="img" aria-label="congratualation-emoji">🎉</span><br />
-                                        You have already won a Loan of amount {state.loanAmount} {getTokenSymbol()}<br />
-                                        Now, You can't take part in bidding process.
-                                    </div>
-                                    : (time.currentUnixTime() > Number(state.autionStartTimestamp) &&
-                                        time.currentUnixTime() < Number(state.autionCloseTimestamp) ?
-                                        <div>
-                                            {state.userCurrentBid > 0 && !showBid ?
-                                                <div className="info-message">
-                                                    You have successfully placed your bid
-                                                    for this auction.<br />
-                                                    <span>
-                                                        Your bid is {state.userCurrentBid} {getTokenSymbol()}<br />
-                                                    </span>
-                                                </div>
-                                                : null
-                                            }
-
-                                            <Card.Footer className="view-pool-footer">
-                                                <Button
-                                                    onClick={() => setShowBid(true)}
-                                                    variant="warning"
-                                                >
-                                                    {state.userCurrentBid > 0 ?
-                                                        <div>Want to Bid Higher ?</div>
-                                                        :
-                                                        <div>Want to Bid ?</div>
-                                                    }
-                                                </Button>
-                                            </Card.Footer>
+                                (time.currentUnixTime() >= Number(state.poolCloseTimestamp) ?
+                                    (!state.claimedFinalYield ?
+                                        <Card.Footer className="view-pool-footer">
+                                            <Button
+                                                onClick={handleClaimFinalYield}
+                                                variant="success"
+                                            >
+                                                {claimingYield ?
+                                                    <div className="d-flex align-items-center">
+                                                        Processing
+                                                    <span className="loading ml-2"></span>
+                                                    </div>
+                                                    :
+                                                    <div>Claim Final Yield</div>
+                                                }
+                                            </Button>
+                                        </Card.Footer>
+                                        :
+                                        <div className="info-message">
+                                            Thank you for your participation in the pool.<br />
+                                            You have already claimed your Final yield. <br />
+                                            Hope to see you on other pools
+                                            <span role="img" aria-label="smile-emoji"> 🙂</span>
                                         </div>
-                                        : (state.isHighestBidder ?
+                                    ) : (state.alreadyTakenLoan ?
+                                        <div className="info-message">
+                                            Congratulations
+                                            <span role="img" aria-label="congratualation-emoji"> 🎉</span><br />
+                                            You have already won a Loan of amount {state.loanAmount} {getTokenSymbol()}<br />
+                                            Now, You can't take part in bidding process.
+                                        </div>
+                                        : (!state.isLoanWinner &&
+                                            time.currentUnixTime() > Number(state.autionStartTimestamp) &&
+                                            time.currentUnixTime() < Number(state.autionCloseTimestamp) ?
                                             <div>
-                                                <div className="info-message">
-                                                    You have successfully won the bid.<br />
-                                                    {time.currentUnixTime < (state.startedAt +
-                                                        (state.auctionCount * state.auctionInterval * 3600)
-                                                    ) ?
-                                                        <div>
-                                                            You will be able to claim your loan in
-                                                            {time.getRemaingTime((state.startedAt +
-                                                            (state.auctionCount * state.auctionInterval * 3600)
-                                                        ) - time.currentUnixTime)}
-                                                        </div>
-                                                        :
-                                                        <div>
-                                                            click below button to claim your loan of
-                                                            <span> {state.loanAmount} {getTokenSymbol()}.</span>
-                                                        </div>
-                                                    }
-                                                </div>
+                                                {state.userCurrentBid > 0 && !showBid ?
+                                                    <div className="info-message">
+                                                        You have successfully placed your bid
+                                                    for this auction.<br />
+                                                        <span>
+                                                            Your bid is {state.userCurrentBid} {getTokenSymbol()}<br />
+                                                        </span>
+                                                    </div>
+                                                    : null
+                                                }
+
                                                 <Card.Footer className="view-pool-footer">
                                                     <Button
-                                                        onClick={handleClaimLoan}
-                                                        variant="success"
+                                                        onClick={() => setShowBid(true)}
+                                                        variant="warning"
                                                     >
-                                                        {claimingLoan ?
-                                                            <div className="d-flex align-items-center">
-                                                                Processing
-                                                            <span className="loading ml-2"></span>
-                                                            </div>
+                                                        {state.userCurrentBid > 0 ?
+                                                            <div>Want to Bid Higher ?</div>
                                                             :
-                                                            <div>Claim Your Loan</div>
+                                                            <div>Want to Bid ?</div>
                                                         }
                                                     </Button>
                                                 </Card.Footer>
                                             </div>
-                                            : (time.currentUnixTime() >= Number(state.poolCloseTimestamp) ?
-                                                (!state.claimedFinalYield ?
+
+                                            : (state.isLoanWinner ?
+                                                <div>
+                                                    <div className="info-message">
+                                                        You have successfully won the bid in auction {state.winnerInAuction}
+                                                        <br />click below button to claim your loan of
+                                                            <span> {state.loanAmount} {getTokenSymbol()}.</span>
+                                                    </div>
                                                     <Card.Footer className="view-pool-footer">
                                                         <Button
-                                                            onClick={handleClaimFinalYield}
+                                                            onClick={handleClaimLoan}
                                                             variant="success"
                                                         >
-                                                            {claimingYield ?
+                                                            {claimingLoan ?
                                                                 <div className="d-flex align-items-center">
                                                                     Processing
-                                                            <span className="loading ml-2"></span>
+                                                                    <span className="loading ml-2"></span>
                                                                 </div>
                                                                 :
-                                                                <div>Claim Final Yield</div>
+                                                                <div>Claim Your Loan</div>
                                                             }
                                                         </Button>
                                                     </Card.Footer>
-                                                    :
-                                                    <div className="info-message">
-                                                        Thank you for your participation in the pool.<br />
-                                                        You have already claimed your Final yield. <br />
-                                                        Hope to see you on other pools
-                                                    <span role="img" aria-label="smile-emoji"> 🙂</span>
-                                                    </div>
-                                                ) :
+                                                </div>
+                                                :
                                                 <div className="info-message">
                                                     Thank you for your participation in the pool.<br />
                                                     {state.totalParticipants <= 1 ?

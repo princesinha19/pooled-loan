@@ -6,6 +6,7 @@ import history from "../Utils/history";
 import AlertModal from "../Utils/AlertModal";
 import SuccessModal from "../Utils/SuccessModal";
 import { precision } from "../../utils/precision";
+import zeroxLogo from "../../assets/0x.png";
 import {
     Row,
     Col,
@@ -14,6 +15,7 @@ import {
     Dropdown,
     DropdownButton,
     Card,
+    Image,
 } from "react-bootstrap";
 
 export default function SwapToken({
@@ -119,7 +121,7 @@ export default function SwapToken({
                 style={{ backgroundColor: "rgb(253, 255, 255)" }}
             >
                 <Card.Header>
-                    <u>Swap Your Token</u>
+                    Swap Your Asset
                 </Card.Header>
 
                 <Card.Body>
@@ -146,7 +148,12 @@ export default function SwapToken({
                                 </Col>
                             </Row>
                         </div>
-                        : null
+                        : <div
+                            className="auction-message"
+                            style={{ fontSize: "medium" }}
+                        >
+                            * Swap Using 0x Protocol
+                        </div>
                     }
 
                     <Row>
@@ -249,7 +256,10 @@ export default function SwapToken({
                                 <span className="loading ml-2"></span>
                                     </div>
                                     :
-                                    <div>Submit</div>
+                                    <div>
+                                        <Image src={zeroxLogo} width="25px"></Image>
+                                        <span> Submit</span>
+                                    </div>
                                 }
                             </Button>
                         </Col>

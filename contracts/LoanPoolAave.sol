@@ -136,10 +136,22 @@ contract LoanPoolAave is Aave {
     }
 
     function claimLoan() public {
-        require(
-            highestBidder[getAuctionCount()] == msg.sender,
-            "You are not the highest bidder !!"
-        );
+        (bool isWinner, uint256 term) = checkWinnerStatus(msg.sender);
+
+        require(isWinner, "You are not the highest bidder !!");
+
+        if (term < totalParticipants - 1) {
+            require(
+                term < getAuctionCount(),
+                "Can't claim loan during the auction !!"
+            );
+        } else if (term >= totalParticipants) {
+            require(
+                block.timestamp > nextAutionCloseTimestamp(),
+                "Can't claim loan during the auction !!"
+            );
+        }
+
         require(
             withdraw(loanAmount[msg.sender] * 10**token.decimals()),
             "Withdrawl from lending pool failed !!"
@@ -171,10 +183,14 @@ contract LoanPoolAave is Aave {
             "You are not a participant of this pool"
         );
 
+        uint256 returnAmount = finalReturnAmount();
+
         claimerCount++;
         claimedFinalYield[msg.sender] = true;
 
-        uint256 returnAmount = finalReturnAmount();
+        if (takenLoan[msg.sender]) {
+            loanerCount--;
+        }
 
         require(
             withdraw(returnAmount),
@@ -200,12 +216,30 @@ contract LoanPoolAave is Aave {
             );
     }
 
+    function checkWinnerStatus(address account)
+        public
+        view
+        returns (bool, uint256)
+    {
+        bool result;
+        uint256 term;
+
+        for (uint256 i = 1; i <= getAuctionCount() + 1; i++) {
+            if (highestBidder[i] == account) {
+                result = true;
+                term = i;
+            }
+        }
+
+        return (result, term);
+    }
+
     function getAuctionCount() public view returns (uint256) {
         uint256 term = ((block.timestamp - poolStartTimestamp) /
-            (auctionInterval * 1 hours)) + 1;
+            ((auctionInterval - auctionDuration) * 1 hours)) + 1;
 
         if (term >= totalParticipants) {
-            term = totalParticipants;
+            term = totalParticipants - 1;
         }
 
         return term;

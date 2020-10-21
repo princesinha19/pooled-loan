@@ -127,6 +127,33 @@ export default function CreatePool() {
                         <Card.Body>
                             <Row style={{ marginTop: "10px" }}>
                                 <Col className="text-header">
+                                    Collateral Amount:
+                                </Col>
+                                <Col style={{ paddingLeft: "0px" }}>
+                                    <Form.Control
+                                        className="mb-4"
+                                        type="number"
+                                        placeholder="(Max Bid Amount * Max Participants)"
+                                        style={{ width: "80%" }}
+                                        value={
+                                            (addPoolState.maximumBidAmount *
+                                                (addPoolState.maxParticipants > 0 ?
+                                                    addPoolState.maxParticipants : 1
+                                                ) > 0 ?
+                                                addPoolState.maximumBidAmount *
+                                                (addPoolState.maxParticipants > 0 ?
+                                                    addPoolState.maxParticipants : 1
+                                                )
+                                                : ""
+                                            )
+                                        }
+                                        disabled={true}
+                                    />
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col className="text-header">
                                     Maximum Bid Amount:
                                 </Col>
                                 <Col style={{ paddingLeft: "0px" }}>
@@ -148,27 +175,6 @@ export default function CreatePool() {
 
                             <Row>
                                 <Col className="text-header">
-                                    Minimum Bid Amount:
-                                </Col>
-                                <Col style={{ paddingLeft: "0px" }}>
-                                    <Form.Control
-                                        className="mb-4"
-                                        type="number"
-                                        step="0"
-                                        placeholder="No decimal places"
-                                        onChange={(e) => setAddPoolState({
-                                            ...addPoolState,
-                                            minimumBidAmount: e.target.value
-                                        })}
-                                        style={{ width: "80%" }}
-                                        value={addPoolState.minimumBidAmount}
-                                        required
-                                    />
-                                </Col>
-                            </Row>
-
-                            <Row>
-                                <Col className="text-header">
                                     Maximum Participants:
                                 </Col>
                                 <Col style={{ paddingLeft: "0px" }}>
@@ -183,6 +189,27 @@ export default function CreatePool() {
                                         })}
                                         style={{ width: "80%" }}
                                         value={addPoolState.maxParticipants}
+                                        required
+                                    />
+                                </Col>
+                            </Row>
+
+                            <Row>
+                                <Col className="text-header">
+                                    Minimum Bid Amount:
+                                </Col>
+                                <Col style={{ paddingLeft: "0px" }}>
+                                    <Form.Control
+                                        className="mb-4"
+                                        type="number"
+                                        step="0"
+                                        placeholder="No decimal places"
+                                        onChange={(e) => setAddPoolState({
+                                            ...addPoolState,
+                                            minimumBidAmount: e.target.value
+                                        })}
+                                        style={{ width: "80%" }}
+                                        value={addPoolState.minimumBidAmount}
                                         required
                                     />
                                 </Col>
@@ -301,7 +328,7 @@ export default function CreatePool() {
                     ...successModal, open: false
                 })}
                 onConfirm={() => history.push("/")}
-            >   
+            >
                 {successModal.msg}
             </SuccessModal>
         </div>
